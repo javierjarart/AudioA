@@ -14,7 +14,8 @@ Android ──┘
 
 | Archivo | Plataforma | Función |
 |---|---|---|
-| `audio_server.py` | Linux | Receptor UDP, reproduce audio con PyAudio |
+| `audio_app.py` | Windows / Linux | **App unificada** — servidor o cliente con GUI (PySide6 + sounddevice) |
+| `audio_server.py` | Linux | CLI — receptor UDP, reproduce audio con PyAudio |
 | `audio_client_windows.py` | Windows | CLI — captura micrófono/loopback y envía por UDP |
 | `audio_client_gui.py` | Windows | GUI (PySide6) — misma funcionalidad con interfaz gráfica |
 | `AudioClientAndroid.kt` | Android | App Kotlin — captura micrófono y envía por UDP |
@@ -65,6 +66,47 @@ python audio_client_gui.py
 ```
 
 Interfaz gráfica con selección de dispositivo, ajuste de chunk, contador de paquetes e indicador de estado.
+
+## App Unificada (Windows)
+
+```bash
+pip install pyside6 sounddevice
+python audio_app.py
+```
+
+Un solo ejecutable que funciona como **servidor** o **cliente**:
+
+| Modo | Qué hace |
+|---|---|
+| Servidor | Recibe UDP y reproduce con `sd.OutputStream` (reemplaza PyAudio) |
+| Cliente | Captura micrófono/loopback y envía por UDP |
+
+Selector de modo mediante radio buttons, panel dinámico con parámetros específicos de cada modo.
+
+### Buildear .exe standalone
+
+```bash
+pip install pyinstaller
+pyinstaller --onefile --windowed --name "AudioA" --add-data "resources/icon.png;resources" --icon resources/icon.ico audio_app.py
+```
+
+Salida: `dist/AudioA.exe`
+
+### Buildear instalador (Inno Setup)
+
+Requiere [Inno Setup](https://jrsoftware.org/isdl.php) instalado.
+
+```bash
+build_installer.bat
+```
+
+O manualmente:
+
+```bash
+ISCC.exe installer.iss
+```
+
+Salida: `dist/AudioA_Setup.exe`
 
 ## Cliente Android
 
